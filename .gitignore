@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+venv/
+.venv/
+**/venv/
+**/.venv/
+.env
+**/.env
+**/yolov8n.pt
+**/detection_history.csv

@@ -1,0 +1,221 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Language Translator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header>
+            <h1>🌍 Smart Language Translator</h1>
+            <p>Translate your words into different languages</p>
+        </header>
+
+        <div class="language-section">
+
+            <div class="language-box">
+                <label for="source-language">Translate From</label>
+                <select id="source-language">
+                    <option value="">Loading languages...</option>
+                </select>
+            </div>
+
+            <div class="language-box">
+                <label for="target-language">Translate To</label>
+                <select id="target-language">
+                    <option value="">Loading languages...</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="text-section">
+
+            <div class="text-box">
+                <label for="input-text">Enter Text</label>
+                <textarea
+                    id="input-text"
+                    placeholder="Enter the text you want to translate..."
+                ></textarea>
+            </div>
+
+            <div class="text-box">
+                <label for="output-text">Translated Text</label>
+                <textarea
+                    id="output-text"
+                    placeholder="Your translated text will appear here..."
+                    readonly
+                ></textarea>
+            </div>
+
+        </div>
+
+        <div class="button-section">
+            <button id="translate-button" onclick="translateText()">
+                Translate
+            </button>
+
+            <button class="copy-button" onclick="copyTranslation()">
+                Copy Translation
+            </button>
+        </div>
+
+        <p id="status-message" role="status">
+            Loading supported languages...
+        </p>
+
+        <footer>
+            <p>Powered by Python, Flask and LibreTranslate</p>
+        </footer>
+
+    </div>
+
+    <script>
+        const sourceSelect = document.getElementById("source-language");
+        const targetSelect = document.getElementById("target-language");
+        const statusMessage = document.getElementById("status-message");
+
+        let supportedLanguages = [];
+
+        // Load languages from LibreTranslate
+        async function loadLanguages() {
+            try {
+                const response = await fetch("/api/languages");
+                const languages = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(languages.error || "Could not load languages.");
+                }
+
+                supportedLanguages = languages;
+
+                sourceSelect.innerHTML = "";
+                targetSelect.innerHTML = "";
+
+                languages.forEach(language => {
+                    const option = document.createElement("option");
+                    option.value = language.code;
+                    option.textContent = language.name;
+                    sourceSelect.appendChild(option);
+                });
+
+                // Prefer English as the source language
+                sourceSelect.value = languages.some(lang => lang.code === "en")
+                    ? "en"
+                    : languages[0].code;
+
+                updateTargetLanguages();
+
+                statusMessage.textContent =
+                    "Supported languages loaded successfully.";
+
+            } catch (error) {
+                statusMessage.textContent = error.message;
+            }
+        }
+
+        // Show only target languages supported by selected source
+ function updateTargetLanguages() {
+
+    targetSelect.innerHTML = "";
+
+    supportedLanguages.forEach(language => {
+
+        const option = document.createElement("option");
+
+        option.value = language.code;
+        option.textContent = language.name;
+
+        targetSelect.appendChild(option);
+
+    });
+
+    targetSelect.value = "hi";
+
+    statusMessage.textContent = "Ready to translate!";
+}
+        async function translateText() {
+            const text = document.getElementById("input-text").value.trim();
+            const output = document.getElementById("output-text");
+            const button = document.getElementById("translate-button");
+
+            const source = sourceSelect.value;
+            const target = targetSelect.value;
+
+            if (!text) {
+                statusMessage.textContent = "Please enter some text.";
+                return;
+            }
+
+            if (!source || !target) {
+                statusMessage.textContent =
+                    "No supported language pair is available.";
+                return;
+            }
+
+            button.disabled = true;
+            button.textContent = "Translating...";
+            statusMessage.textContent = "Please wait...";
+            output.value = "";
+
+            try {
+                const response = await fetch("/translate", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        source: source,
+                        target: target
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || "Translation failed.");
+                }
+
+                output.value = data.translated_text;
+                statusMessage.textContent =
+                    "Translation completed successfully!";
+
+            } catch (error) {
+                statusMessage.textContent = error.message;
+            } finally {
+                button.disabled = false;
+                button.textContent = "Translate";
+            }
+        }
+
+        // Copy translated text
+        async function copyTranslation() {
+            const output = document.getElementById("output-text");
+
+            if (!output.value) {
+                statusMessage.textContent = "Nothing to copy yet.";
+                return;
+            }
+
+            try {
+                await navigator.clipboard.writeText(output.value);
+                statusMessage.textContent = "Translation copied!";
+            } catch (error) {
+                output.select();
+                document.execCommand("copy");
+                statusMessage.textContent = "Translation copied!";
+            }
+        }
+
+        loadLanguages();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,248 @@
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #dbeafe, #ede9fe, #fce7f3);
+}
+
+.chat-container {
+    width: 100%;
+    max-width: 600px;
+    background: white;
+    border-radius: 22px;
+    padding: 25px;
+    box-shadow: 0 15px 45px rgba(70, 60, 130, 0.15);
+}
+
+header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.bot-icon {
+    width: 50px;
+    height: 50px;
+    display: grid;
+    place-items: center;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #6366f1, #9333ea);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.header-info {
+    flex: 1;
+}
+
+h1 {
+    font-size: 21px;
+    margin: 0 0 5px;
+    color: #252344;
+}
+
+header p {
+    margin: 0;
+    font-size: 13px;
+    color: #88849d;
+}
+
+#clear-chat {
+    padding: 9px 12px;
+    background: #fff0f0;
+    color: #d64545;
+    border: 1px solid #ffd0d0;
+    border-radius: 9px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+#clear-chat:hover {
+    background: #d64545;
+    color: white;
+}
+
+.chat-box {
+    height: 380px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 22px 5px;
+}
+
+.message {
+    max-width: 85%;
+    padding: 13px 16px;
+    border-radius: 17px;
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+    animation: appear 0.3s ease;
+}
+
+.bot-message {
+    align-self: flex-start;
+    background: #f0efff;
+    color: #302d55;
+    border-bottom-left-radius: 5px;
+}
+
+.user-message {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #6366f1, #7c3aed);
+    color: white;
+    border-bottom-right-radius: 5px;
+}
+
+#chat-form {
+    display: flex;
+    gap: 10px;
+}
+
+#question {
+    flex: 1;
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid #dedde8;
+    border-radius: 13px;
+    outline: none;
+    font-size: 14px;
+}
+
+#question:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+button {
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#chat-form button {
+    padding: 0 20px;
+    border: none;
+    border-radius: 13px;
+    background: #635bdb;
+    color: white;
+    font-weight: bold;
+}
+
+#chat-form button:hover {
+    background: #4f46bd;
+}
+
+#chat-form button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.suggestions {
+    margin-bottom: 15px;
+}
+
+.suggestions p {
+    font-size: 13px;
+    color: #77758b;
+    margin-bottom: 10px;
+}
+
+.suggestion {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 4px 3px;
+    border: 1px solid #635bdb;
+    border-radius: 20px;
+    background: white;
+    color: #635bdb;
+    font-size: 12px;
+}
+
+.suggestion:hover {
+    background: #635bdb;
+    color: white;
+}
+
+.typing {
+    font-style: italic;
+    color: #77758b;
+}
+
+.dot {
+    display: inline-block;
+    font-size: 22px;
+    animation: typing 1s infinite;
+}
+
+.dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0%, 60%, 100% {
+        opacity: 0.2;
+        transform: translateY(0);
+    }
+    30% {
+        opacity: 1;
+        transform: translateY(-4px);
+    }
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.footer {
+    margin: 18px 0 0;
+    text-align: center;
+    font-size: 12px;
+    color: #89879b;
+}
+
+@media (max-width: 480px) {
+    .chat-container {
+        padding: 16px;
+    }
+
+    h1 {
+        font-size: 17px;
+    }
+
+    .chat-box {
+        height: 55vh;
+    }
+
+    .message {
+        max-width: 95%;
+    }
+
+    #clear-chat {
+        padding: 7px;
+        font-size: 11px;
+    }
+}
